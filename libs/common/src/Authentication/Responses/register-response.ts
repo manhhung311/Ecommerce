@@ -1,10 +1,10 @@
-import { IUser } from "../IUser.interface";
+import { IUser } from "@app/common/Authentication/IUser.interface";
 import { ApiProperty } from "@nestjs/swagger";
 import { IResponse } from "@app/common/Authentication/Responses/IResponse";
 
 export class RegisterReponse implements IResponse {
     @ApiProperty({ example: 201 })
-    status: number;
+    statusCode: number;
 
     @ApiProperty({ example: 'user login success' })
     message: string;
@@ -20,7 +20,6 @@ export class RegisterReponse implements IResponse {
     })
     data: {
         user: IUser,
-        token: object
     };
 
     @ApiProperty({ example: null, nullable: true })

@@ -3,14 +3,14 @@ import { IResponse } from "@app/common/Authentication/Responses/IResponse";
 
 export class ForgetPasswordResponse implements IResponse {
     @ApiProperty({example: 200})
-    status: number;
+    statusCode: number;
 
     @ApiProperty({example: 'success'})
     message: string;
 
     @ApiProperty({
         example: {
-            email: "xxx.@gmail.com"
+            email: "xxx.@gmail.com",
         },
         nullable: true
     })

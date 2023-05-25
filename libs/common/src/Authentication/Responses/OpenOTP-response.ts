@@ -1,10 +1,10 @@
-import { IUser } from "../IUser.interface";
+
 import { IResponse } from "./IResponse";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class OpenOTPReponse implements IResponse {
     @ApiProperty({example: 201})
-    status: number;
+    statusCode: number;
 
     @ApiProperty({example: 'open OTP success'})
     message: string;

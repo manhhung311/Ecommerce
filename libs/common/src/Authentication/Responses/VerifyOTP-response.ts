@@ -1,10 +1,9 @@
-import { IUser } from "../IUser.interface";
 import { IResponse } from "./IResponse";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class VerifyOTPResponse implements IResponse {
     @ApiProperty({example: 201})
-    status: number;
+    statusCode: number;
 
     @ApiProperty({example: 'success'})
     message: string;

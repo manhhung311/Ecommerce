@@ -3,7 +3,7 @@ import { IResponse } from "@app/common/Authentication/Responses/IResponse";
 
 export class ResetPasswordResponse implements IResponse {
     @ApiProperty({example: 200})
-    status: number;
+    statusCode: number;
 
     @ApiProperty({example: 'success'})
     message: string;

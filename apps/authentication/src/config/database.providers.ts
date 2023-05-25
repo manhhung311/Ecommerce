@@ -24,7 +24,6 @@ export const databaseProviders = [
       sequelize.addModels([Cookies, MetaData, OldToken, Profile, Roles, Token, Users
       ]);
       await sequelize.sync();
-      console.log(sequelize)
       return sequelize;
     },
   },

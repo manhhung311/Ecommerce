@@ -1,10 +1,10 @@
-import { IUser } from "../IUser.interface";
+import { IUser } from "@app/common/Authentication/IUser.interface";
 import { IResponse } from "./IResponse";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class ActivatedReponse implements IResponse {
     @ApiProperty({example: 201})
-    status: number;
+    statusCode: number;
 
     @ApiProperty({example: 'user login success'})
     message: string;

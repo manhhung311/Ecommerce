@@ -27,6 +27,7 @@ import { ForgetPasswordResponse } from "@app/common/Authentication/Responses/for
 import { ResetPasswordResponse } from "@app/common/Authentication/Responses/resetPassword-response";
 import { ReactivatedReponse } from "@app/common/Authentication/Responses/reactivated-response";
 import { MailService } from "@app/mail";
+import { IResponse } from "@app/common/Authentication/Responses/IResponse";
 @Injectable()
 export class AuthenticationService {
 
@@ -57,8 +58,13 @@ export class AuthenticationService {
         AuthenticationService.publicKey = publicKey;
     }
 
-    static getPublicKey(): string {
-        return this.publicKey;
+    static getPublicKey(): IResponse {
+        return {
+            statusCode: HttpStatus.OK,
+            message: "ok",
+            data: AuthenticationService.publicKey,
+            errors: null
+        };
     }
 
     async open2FA(token: string): Promise<OpenOTPReponse> {
@@ -71,7 +77,7 @@ export class AuthenticationService {
         let otp = authenticator.keyuri(username, "ecommerce", secret);
         let qrcode = await QRcode.toDataURL(otp);
         return {
-            status: HttpStatus.CREATED,
+            statusCode: HttpStatus.CREATED,
             message: "success",
             data: {
                 image: qrcode,
@@ -89,7 +95,7 @@ export class AuthenticationService {
             let refreshToken = await this.generateRefeshToken(user.userName);
             this.cacheManager.set(refreshToken, user, 90 * 1000 * 60 * 60 * 24);
             return {
-                status: HttpStatus.ACCEPTED,
+                statusCode: HttpStatus.ACCEPTED,
                 message: "success",
                 data: {
                     accessToken: await this.generateAccessToken(user.userName),
@@ -100,7 +106,7 @@ export class AuthenticationService {
             };
         }
         return {
-            status: HttpStatus.UNAUTHORIZED,
+            statusCode: HttpStatus.UNAUTHORIZED,
             message: "otp cannot verify",
             data: null,
             errors: {
@@ -128,7 +134,7 @@ export class AuthenticationService {
                     if (u.activated) {
                         await this.setToken(u.id, token.refreshToken);
                         return {
-                            status: HttpStatus.OK,
+                            statusCode: HttpStatus.OK,
                             message: "login success",
                             data: {
                                 user: {
@@ -141,7 +147,7 @@ export class AuthenticationService {
                         };
                     } else {
                         return {
-                            status: HttpStatus.UNAUTHORIZED, message: "account not activated",
+                            statusCode: HttpStatus.UNAUTHORIZED, message: "account not activated",
                             data: null,
                             errors: null
                         };
@@ -149,7 +155,7 @@ export class AuthenticationService {
                 }
                 else {
                     return {
-                        status: HttpStatus.UNAUTHORIZED,
+                        statusCode: HttpStatus.UNAUTHORIZED,
                         message: "account need otp authentication",
                         data: {
                             user: null,
@@ -164,7 +170,7 @@ export class AuthenticationService {
         }
         else {
             return {
-                status: HttpStatus.NOT_FOUND, message: "wrong login", data: null, errors: null
+                statusCode: HttpStatus.NOT_FOUND, message: "wrong login", data: null, errors: null
             };
         }
     }
@@ -190,14 +196,20 @@ export class AuthenticationService {
                 },
             });
             return {
-                status: HttpStatus.CREATED,
+                statusCode: HttpStatus.CREATED,
                 message: "create success",
-                data: null,
+                data: {
+                    user: {
+                        id: u.id,
+                        email: u.email,
+                        token: null
+                    }
+                },
                 errors: null
             };
         }
         return {
-            status: HttpStatus.CONFLICT,
+            statusCode: HttpStatus.CONFLICT,
             message: "Account already exists",
             data: null,
             errors: {
@@ -205,7 +217,7 @@ export class AuthenticationService {
             }
         };
     }
-    //
+    
     async forgetPassword(forget: ForgotPasswordDTO): Promise<ForgetPasswordResponse> {
         const user = await this.findByUserNameAndEmail(forget.username, forget.email);
         if (user) {
@@ -221,14 +233,14 @@ export class AuthenticationService {
                 },
             });
             return {
-                status: HttpStatus.CREATED,
+                statusCode: HttpStatus.CREATED,
                 message: "success",
                 data: { email: forget.email },
                 errors: null
             };
         }
         return {
-            status: HttpStatus.NOT_FOUND,
+            statusCode: HttpStatus.NOT_FOUND,
             message: "Can't find account",
             data: { email: forget.email },
             errors: null
@@ -248,7 +260,7 @@ export class AuthenticationService {
                     user.password = password;
                     user = await this.updateUser(user);
                     return {
-                        status: HttpStatus.CREATED,
+                        statusCode: HttpStatus.CREATED,
                         message: "success",
                         data: null,
                         errors: null
@@ -256,38 +268,38 @@ export class AuthenticationService {
                 }
             }
             return {
-                status: HttpStatus.UNAUTHORIZED,
+                statusCode: HttpStatus.UNAUTHORIZED,
                 message: "token không đúng",
                 data: null,
                 errors: null
             }
         }
         return {
-            status: HttpStatus.PRECONDITION_FAILED,
+            statusCode: HttpStatus.PRECONDITION_FAILED,
             message: "mật khẩu không đúng",
             data: null,
             errors: null
         }
     }
 
-    async logout(refreshToken: string): Promise<{ status: number, message: string }> {
+    async logout(refreshToken: string): Promise<{ statusCode: number, message: string }> {
         if (refreshToken) {
             let token = await this.findToken(refreshToken);
             if (token) {
                 this.deleteToken(token);
                 return {
-                    status: HttpStatus.ACCEPTED,
+                    statusCode: HttpStatus.ACCEPTED,
                     message: "success"
                 };
             }
         }
         return {
-            status: HttpStatus.UNAUTHORIZED,
+            statusCode: HttpStatus.UNAUTHORIZED,
             message: ""
         };
     }
 
-    async logoutAll(accessToken: string): Promise<{ status: number, message: string }> {
+    async logoutAll(accessToken: string): Promise<{ statusCode: number, message: string }> {
         let token = await this.verifyToken(accessToken)
         if (token) {
             let username = (<any>token).username;
@@ -296,12 +308,12 @@ export class AuthenticationService {
                 this.deleteToken(element);
             });
             return {
-                status: HttpStatus.ACCEPTED,
+                statusCode: HttpStatus.ACCEPTED,
                 message: "success"
             };
         }
         return {
-            status: HttpStatus.UNAUTHORIZED,
+            statusCode: HttpStatus.UNAUTHORIZED,
             message: "success"
         };
     }
@@ -339,14 +351,14 @@ export class AuthenticationService {
                 },
             });
             return {
-                status: HttpStatus.CREATED,
+                statusCode: HttpStatus.CREATED,
                 message: "success",
                 data: { email: user.email },
                 errors: null
             };
         }
         return {
-            status: HttpStatus.UNAUTHORIZED,
+            statusCode: HttpStatus.UNAUTHORIZED,
             message: "",
             data: null,
             errors: null
@@ -453,7 +465,7 @@ export class AuthenticationService {
                         user = await this.userRepository.update(user);
                         if (user != null) {
                             return {
-                                status: HttpStatus.CREATED,
+                                statusCode: HttpStatus.CREATED,
                                 message: "activate success",
                                 data: null,
                                 errors: null
@@ -462,7 +474,7 @@ export class AuthenticationService {
                     }
                     else {
                         return {
-                            status: HttpStatus.UNAUTHORIZED,
+                            statusCode: HttpStatus.UNAUTHORIZED,
                             message: "mã kích hoạt hết hạn",
                             data: null, errors: null
                         }
@@ -470,7 +482,7 @@ export class AuthenticationService {
                 }
                 else {
                     return {
-                        status: HttpStatus.NOT_ACCEPTABLE,
+                        statusCode: HttpStatus.NOT_ACCEPTABLE,
                         message: "Tài khoản này đã được kích hoạt",
                         data: null, errors: null
                     }
@@ -478,14 +490,14 @@ export class AuthenticationService {
             }
             else {
                 return {
-                    status: HttpStatus.NOT_FOUND,
+                    statusCode: HttpStatus.NOT_FOUND,
                     message: "Tài khoản không tồn tại",
                     data: null, errors: null
                 }
             }
         }
         return {
-            status: HttpStatus.UNAUTHORIZED,
+            statusCode: HttpStatus.UNAUTHORIZED,
             message: "mã kích hoạt không đúng",
             data: null, errors: null
         }
