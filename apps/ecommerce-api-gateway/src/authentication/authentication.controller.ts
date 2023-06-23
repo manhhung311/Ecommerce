@@ -3,9 +3,9 @@ import { IResponse } from '@app/common/Authentication/Responses/IResponse';
 import { Body, Controller, Get, HttpException, HttpStatus, Inject, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { LoginResponse } from '@app/common/authentication/Responses/login-response';
+import { LoginResponse } from '@app/common/Authentication/Responses/login-response';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { RegisterReponse } from '@app/common/authentication/Responses/register-response';
+import { RegisterReponse } from '@app/common/Authentication/Responses/register-response';
 import { UserRegisterDTO } from '@app/common/Authentication/UserRegisterDTO';
 @ApiTags('Authetication')
 @Controller("auth")
