@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { UserLoginDTO } from '@app/common/Authentication/UserLoginDTO';
+import { UserLoginDTO } from '@app/common/Authentication/DTO/UserLoginDTO';
 import { AuthenticationService } from '../Services/authentication.service';
-import { UserRegisterDTO } from '@app/common/Authentication/UserRegisterDTO';
-import { ActivatedDTO } from '@app/common/Authentication/activated.dto';
-import { ForgotPasswordDTO } from '@app/common/Authentication/ForgotPasswordDTO';
-import { ResetPasswordDTO } from '@app/common/Authentication/ResetPasswordDTO';
+import { UserRegisterDTO } from '@app/common/Authentication/DTO/UserRegisterDTO';
+import { ActivatedDTO } from '@app/common/Authentication/DTO/activated.dto';
+import { ForgotPasswordDTO } from '@app/common/Authentication/DTO/ForgotPasswordDTO';
+import { ResetPasswordDTO } from '@app/common/Authentication/DTO/ResetPasswordDTO';
 
 @Controller("authentication")
 export class AuthenticationController {
@@ -71,5 +71,8 @@ export class AuthenticationController {
     return this.authenticationService.logout(logout.accessToken);
   }  
 
-
+  @MessagePattern({cmd: 'getOTP'})
+  async getOTP(token: string) {
+    return this.authenticationService
+  }
 }

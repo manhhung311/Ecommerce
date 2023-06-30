@@ -60,7 +60,6 @@
     "sib-api-v3-sdk": "^8.5.0",
     "socket.io": "^4.5.4",
     "swagger": "^0.7.5",
-    "ts-mockery": "^1.2.0",
     "typeorm": "^0.3.11"
   },
   "devDependencies": {

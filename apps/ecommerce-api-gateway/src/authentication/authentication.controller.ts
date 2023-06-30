@@ -1,12 +1,12 @@
-import { UserLoginDTO } from '@app/common/Authentication/UserLoginDTO';
-import { IResponse } from '@app/common/Authentication/Responses/IResponse';
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { UserLoginDTO } from '@app/common/Authentication/DTO/UserLoginDTO';
+import { IResponse } from '@app/common/IResponse';
+import { Body, Controller, Get, Head, Header, HttpException, HttpStatus, Inject, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { LoginResponse } from '@app/common/Authentication/Responses/login-response';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { RegisterReponse } from '@app/common/Authentication/Responses/register-response';
-import { UserRegisterDTO } from '@app/common/Authentication/UserRegisterDTO';
+import { UserRegisterDTO } from '@app/common/Authentication/DTO/UserRegisterDTO';
 @ApiTags('Authetication')
 @Controller("auth")
 @UsePipes(new ValidationPipe())
@@ -54,6 +54,19 @@ export class AuthenticationController {
                 data: null,
                 message: response.message,
                 errors: response.errors
+            }, response.statusCode);
+        }
+        return response;
+    }
+
+    @Get('getToken')
+    async getToken(@Param('token') token: string ): Promise<IResponse> {
+        const request = this.authenticationClient.send({cmd: 'getToken'}, token);
+        const response: IResponse = await firstValueFrom(request);
+        if(response.statusCode != HttpStatus.OK) {
+            throw new HttpException({
+                data: null,
+                message: response.message
             }, response.statusCode);
         }
         return response;

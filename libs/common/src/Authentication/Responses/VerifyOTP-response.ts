@@ -1,4 +1,4 @@
-import { IResponse } from "./IResponse";
+import { IResponse } from "../../IResponse";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class VerifyOTPResponse implements IResponse {

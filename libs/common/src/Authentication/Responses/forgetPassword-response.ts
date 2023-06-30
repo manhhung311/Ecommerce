@@ -1,5 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
-import { IResponse } from "@app/common/Authentication/Responses/IResponse";
+import { IResponse } from "@app/common/IResponse";
 
 export class ForgetPasswordResponse implements IResponse {
     @ApiProperty({example: 200})

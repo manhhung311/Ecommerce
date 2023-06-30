@@ -1,11 +1,11 @@
 version: '3'
 services:
-    db:
+    db_auth:
         image: mysql
-        container_name: mysql
+        container_name: mysql_auth
         platform: linux/x86_64
         volumes:
-            - db-store:/var/lib/mysql
+            - db-auth:/var/lib/mysql
             - ./logs:/var/log/mysql
             - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
         environment:
@@ -14,7 +14,52 @@ services:
             - MYSQL_PASSWORD=${DB_PASS:-123}
             - MYSQL_ROOT_PASSWORD=${DB_PASS:-123}
         ports:
-            - ${DB_PORT:-13306}:3306
+            - ${DB_PORT_AUTH:-13307}:3307
+    db_users:
+        image: mysql
+        container_name: mysql_users
+        platform: linux/x86_64
+        volumes:
+            - db-users:/var/lib/mysql
+            - ./logs:/var/log/mysql
+            - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+        environment:
+            - MYSQL_DATABASE=${DB_NAME:-ecommerce}
+            - MYSQL_USER=${DB_USER:-admin}
+            - MYSQL_PASSWORD=${DB_PASS:-123}
+            - MYSQL_ROOT_PASSWORD=${DB_PASS:-123}
+        ports:
+            - ${DB_PORT_USERS:-13308}:3308
+    db_products:
+        image: mysql
+        container_name: mysql_products
+        platform: linux/x86_64
+        volumes:
+            - db-products:/var/lib/mysql
+            - ./logs:/var/log/mysql
+            - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+        environment:
+            - MYSQL_DATABASE=${DB_NAME:-ecommerce}
+            - MYSQL_USER=${DB_USER:-admin}
+            - MYSQL_PASSWORD=${DB_PASS:-123}
+            - MYSQL_ROOT_PASSWORD=${DB_PASS:-123}
+        ports:
+            - ${DB_PORT_PRODUCTS:-13309}:3309
+    db_payment:
+        image: mysql
+        container_name: mysql_payment
+        platform: linux/x86_64
+        volumes:
+            - db-payment:/var/lib/mysql
+            - ./logs:/var/log/mysql
+            - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+        environment:
+            - MYSQL_DATABASE=${DB_NAME:-ecommerce}
+            - MYSQL_USER=${DB_USER:-admin}
+            - MYSQL_PASSWORD=${DB_PASS:-123}
+            - MYSQL_ROOT_PASSWORD=${DB_PASS:-123}
+        ports:
+            - ${DB_PORT_PAYMENT:-13310}:3310
     redis:
         container_name: redis
         image: redis
@@ -69,8 +114,16 @@ services:
             - kafka
 
 volumes:
-    db-store:
+    db-auth:
         driver: local
+    db-users:
+        driver: local
+    db-products:
+        driver: local
+    db-payment:
+        driver: local
+    # db-store:
+    #     driver: local
     # redis-data:
     #     driver: local
     # esdata:

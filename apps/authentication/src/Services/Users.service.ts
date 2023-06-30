@@ -2,7 +2,7 @@ import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../Repositories/UserRepository';
 import { Users } from '../Models/Users.entity';
-import { UserRegisterDTO } from '@app/common/Authentication/UserRegisterDTO';
+import { UserRegisterDTO } from '@app/common/Authentication/DTO/UserRegisterDTO';
 
 @Injectable()
 export class UsersService {

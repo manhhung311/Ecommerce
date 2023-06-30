@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthenticationService } from '../authentication.service';
 import { UserRepository } from '../Repositories/UserRepository';
-import { Mock } from 'ts-mockery'
 import { Users } from '../Models/Users.entity';
 describe('AuthenticationController', () => {
   let authenticationService: AuthenticationService;
@@ -12,14 +11,14 @@ describe('AuthenticationController', () => {
     }).compile();
     let token = '12345678';
     authenticationService = app.get<AuthenticationService>(AuthenticationService);
-    userRepository = Mock.of<UserRepository> ({
-        login: (username: string, password: string)=> {return Promise.resolve(Users)},
-        create: (username: string, password: string, email: string)=> {return Promise.resolve(Users)},
-        findByUserName: (username: string)=> {return Promise.resolve(Users)},
-        findByEmail: (email: string)=>  {return Promise.resolve(Users)}, 
-        findByUserNameOrEmail: (username: string, email: string)=> {return Promise.resolve(Users)},
+    // userRepository = Mock.of<UserRepository> ({
+    //     login: (username: string, password: string)=> {return Promise.resolve(Users)},
+    //     create: (username: string, password: string, email: string)=> {return Promise.resolve(Users)},
+    //     findByUserName: (username: string)=> {return Promise.resolve(Users)},
+    //     findByEmail: (email: string)=>  {return Promise.resolve(Users)}, 
+    //     findByUserNameOrEmail: (username: string, email: string)=> {return Promise.resolve(Users)},
         
-    });
+    // });
   });
 
   describe('root', () => {

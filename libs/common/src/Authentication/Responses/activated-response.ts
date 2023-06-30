@@ -1,5 +1,5 @@
-import { IUser } from "@app/common/Authentication/IUser.interface";
-import { IResponse } from "./IResponse";
+import { IUser } from "@app/common/Authentication/DTO/IUser.interface";
+import { IResponse } from "@app/common/IResponse";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class ActivatedReponse implements IResponse {

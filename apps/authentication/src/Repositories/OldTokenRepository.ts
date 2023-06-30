@@ -1,14 +1,15 @@
 import { BaseRepository } from "@app/common/Repositories/BaseRepository";
 import { Token } from "../Models/Tokens.entity";
+import { OldToken } from "../Models/OldToken.entity";
 
 
-export class OldTokenRepository extends BaseRepository<Token> {
+export class OldTokenRepository extends BaseRepository<OldToken> {
     constructor() {
-        super(Token);
+        super(OldToken);
     }
 
-    public async findByToken(token: string):Promise<Token> {
-        return Token.findOne({
+    public async findByToken(token: string):Promise<OldToken> {
+        return OldToken.findOne({
             where: {
                 refreshToken: token
             }

@@ -3,7 +3,9 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "apps/ecommerce-api-gateway/src",
   "compilerOptions": {
-    "plugins": ["@nestjs/swagger"],
+    "plugins": [
+      "@nestjs/swagger"
+    ],
     "deleteOutDir": true,
     "webpack": true,
     "tsConfigPath": "apps/ecommerce-api-gateway/tsconfig.app.json"
@@ -63,6 +65,15 @@
       "sourceRoot": "apps/products/src",
       "compilerOptions": {
         "tsConfigPath": "apps/products/tsconfig.app.json"
+      }
+    },
+    "users": {
+      "type": "application",
+      "root": "apps/users",
+      "entryFile": "main",
+      "sourceRoot": "apps/users/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users/tsconfig.app.json"
       }
     }
   }

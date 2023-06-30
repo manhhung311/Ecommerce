@@ -25,7 +25,7 @@ export abstract class BaseRepository<M extends Model> implements IRepository {
         return model.destroy();
     }
 
-    save(type: any):Promise<M> {
+    save(type: M):Promise<M> {
        return type.save();
     }
 

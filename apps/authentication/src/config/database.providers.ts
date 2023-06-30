@@ -1,4 +1,4 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { Sequelize } from 'sequelize-typescript';
 import { Cookies } from '../Models/Cookies.entity';
 import { MetaData } from '../Models/MetaData.entity';
@@ -16,7 +16,7 @@ export const databaseProviders = [
       const sequelize = new Sequelize({
         dialect: configService.get("DB"),
         host: configService.get<string>("DB_HOST"),
-        port: configService.get<number>("DB_PORT"),
+        port: configService.get<number>("DB_PORT_AUTH"),
         username: configService.get<string>("DB_USER"),
         password: configService.get<string>("DB_PASS"),
         database: configService.get<string>("DB_DATABASE"),

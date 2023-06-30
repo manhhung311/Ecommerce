@@ -5,10 +5,10 @@ import { Cache } from "cache-manager";
 import * as crypto from "crypto";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import * as bcrypt from 'bcrypt';
-import { UserLoginDTO } from "@app/common/Authentication/UserLoginDTO";
-import { UserRegisterDTO } from "@app/common/Authentication/UserRegisterDTO";
-import { ForgotPasswordDTO } from "@app/common/Authentication/ForgotPasswordDTO";
-import { ResetPasswordDTO } from "@app/common/Authentication/ResetPasswordDTO";
+import { UserLoginDTO } from "@app/common/Authentication/DTO/UserLoginDTO";
+import { UserRegisterDTO } from "@app/common/Authentication/DTO/UserRegisterDTO";
+import { ForgotPasswordDTO } from "@app/common/Authentication/DTO/ForgotPasswordDTO";
+import { ResetPasswordDTO } from "@app/common/Authentication/DTO/ResetPasswordDTO";
 import { UserRepository } from "../Repositories/UserRepository";
 import { TokenRepository } from "../Repositories/TokenRepository";
 import { OldTokenRepository } from "../Repositories/OldTokenRepository";
@@ -16,7 +16,7 @@ import { Users } from "../Models/Users.entity";
 import { Token } from "../Models/Tokens.entity";
 import { OldToken } from "../Models/OldToken.entity";
 import { LoginResponse } from "@app/common/Authentication/Responses/login-response";
-import { ActivatedDTO } from "@app/common/Authentication/activated.dto";
+import { ActivatedDTO } from "@app/common/Authentication/DTO/activated.dto";
 import { ActivatedReponse } from "@app/common/Authentication/Responses/activated-response";
 import { RegisterReponse } from "@app/common/Authentication/Responses/register-response";
 import { authenticator } from "otplib";
@@ -27,7 +27,7 @@ import { ForgetPasswordResponse } from "@app/common/Authentication/Responses/for
 import { ResetPasswordResponse } from "@app/common/Authentication/Responses/resetPassword-response";
 import { ReactivatedReponse } from "@app/common/Authentication/Responses/reactivated-response";
 import { MailService } from "@app/mail";
-import { IResponse } from "@app/common/Authentication/Responses/IResponse";
+import { IResponse } from "@app/common/IResponse";
 @Injectable()
 export class AuthenticationService {
 
@@ -65,6 +65,25 @@ export class AuthenticationService {
             data: AuthenticationService.publicKey,
             errors: null
         };
+    }
+
+    async generateOTP(token: string) {
+        let username = (<any>(await this.verifyToken(token))).username
+        let user = await this.userRepository.findByUserName(username);
+        return authenticator.generate(user.key2FA);
+    }
+
+    async generateOTPSendByEmail(email: string) {
+        let user = await this.userRepository.findByEmail(email);
+        if(!user) throw new NotFoundException('cannot find email');
+        return this.mailerClient.sendEmail({
+            user: { id: user.id, email: user.email, token: { token: null } },
+            subject: 'OTP',
+            template: "SEND_OTP",
+            context: {
+                link: this.config.get("HOST"),
+            },
+        })
     }
 
     async open2FA(token: string): Promise<OpenOTPReponse> {
@@ -185,7 +204,8 @@ export class AuthenticationService {
             u.activated = false;
             let token = await this.generateKeyJWT({ idActivated: u.id });
             u.keyActivated = token;
-            u = await this.userRepository.save(user);
+            u.open2FA = false; u.key2FA = "";
+            u = await this.userRepository.save(u);
             delete u.password;
             await this.mailerClient.sendEmail({
                 user: { id: u.id, email: user.email, token: { token: token } },

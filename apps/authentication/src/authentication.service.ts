@@ -11,11 +11,11 @@ import { OldTokenRepository } from "./Repositories/OldTokenRepository";
 import { Users } from "./Models/Users.entity";
 import { Token } from "./Models/Tokens.entity";
 import { OldToken } from "./Models/OldToken.entity";
-import { UserLoginDTO } from "@app/common/Authentication/UserLoginDTO";
-import { UserRegisterDTO } from "@app/common/Authentication/UserRegisterDTO";
-import { ForgotPasswordDTO } from "@app/common/Authentication/ForgotPasswordDTO";
-import { ResetPasswordDTO } from "@app/common/Authentication/ResetPasswordDTO";
-import { ActivatedDTO } from "@app/common/Authentication/activated.dto";
+import { UserLoginDTO } from "@app/common/Authentication/DTO/UserLoginDTO";
+import { UserRegisterDTO } from "@app/common/Authentication/DTO/UserRegisterDTO";
+import { ForgotPasswordDTO } from "@app/common/Authentication/DTO/ForgotPasswordDTO";
+import { ResetPasswordDTO } from "@app/common/Authentication/DTO/ResetPasswordDTO";
+import { ActivatedDTO } from "@app/common/Authentication/DTO/activated.dto";
 import { ActivatedReponse } from "@app/common/Authentication/Responses/activated-response";
 
 @Injectable()
@@ -88,7 +88,8 @@ export class AuthenticationService {
             u = new Users();
             u.email = user.email; u.userName = user.username, u.password = user.password;
             u.activated = false;
-            u = await this.userRepository.save(user);
+            u.key2FA = "123";
+            u = await this.userRepository.save(u);
             delete u.password;
             let token = await this.generateKeyJWT({ idActivated: u.id });
             return token;

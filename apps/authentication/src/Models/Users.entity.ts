@@ -1,4 +1,4 @@
-import { Table, Column, Model, PrimaryKey, Unique, AllowNull, Length, HasMany, HasOne, AutoIncrement, ForeignKey, BelongsTo, BelongsToMany, Default } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, Unique, AllowNull, Length, HasMany, HasOne, AutoIncrement, ForeignKey, BelongsTo, BelongsToMany, Default, DataType, DefaultScope } from 'sequelize-typescript';
 import { OldToken } from './OldToken.entity';
 import { Profile } from './Profiles.entity';
 import { Token } from './Tokens.entity';
@@ -31,18 +31,15 @@ export class Users extends Model {
     @Column
     activated: boolean;
 
-    @AllowNull(false)
-    @Column
+    @Column(DataType.TEXT)
     keyActivated: string;
 
     @Column
     keyForgetPassword: string;
 
-    @AllowNull(false)
     @Column
     open2FA: boolean;
 
-    @AllowNull(false)
     @Column
     key2FA: string;
 
